@@ -151,16 +151,26 @@ class Window(tk.Tk):
 
         # ДЛЯ ЖЕНИ! ВАЖНО! Теперь эта функция не устанавливает параметры маятников !!!
 
+    def params_to_didigts(self, params):
+        params['p'] = float(params['p']) / 1000
+        params['k'] = int(params['k'])
+        params['zt'] = float(params['zt'])
+
+
     def start_button_pressed(self):
         params_are_correct = self._check_params_in_spinboxes()
         if params_are_correct:
 
             params = self.get_params_from_spinboxes()
-            params['p'] = float(params['p']) / 1000
+            self.params_to_didigts(params)
+            z_start = 0
+            z_end = params['zt'] * 2 * params['p'] * params['p'] / (5 * 10 ** (-2))
+            x_start = params['k'] * params['p'] * -1
+            x_end = params['k'] * params['p']
+            print(z_start, z_end, x_start, x_end)
             # здесь вызов ф-ции отрисовки, туда передаёшь params
             # в парамс все переменные
             # ничего не меняй при вводе, запускай с дефолтными
-            print(params)
 
         else:
             self.stop_button_pressed()
