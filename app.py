@@ -6,6 +6,7 @@ from sys import platform
 from config_spinboxes import *
 import config_gui_win as windows
 import config_gui_mac_lin as mac
+from TalbotMath import *
 
 class Window(tk.Tk):
     def __init__(self):
@@ -19,6 +20,7 @@ class Window(tk.Tk):
         else:
             self.destroy()
 
+        self.talbot = TalbotMath(1, 0, 1)
         self.array_of_spinboxes = spinboxes_to_create_wave
         # basic config of app
         self.title("Эффект Талбота")
@@ -148,21 +150,23 @@ class Window(tk.Tk):
             self.spinboxes[name].delete(0, len(self.spinboxes[name].get()))
             self.spinboxes[name].insert(0, value)
 
-
-        # ДЛЯ ЖЕНИ! ВАЖНО! Теперь эта функция не устанавливает параметры маятников !!!
-
-    def params_to_didigts(self, params):
+    @staticmethod
+    def params_to_digits(params):
         params['p'] = float(params['p']) / 1000
         params['k'] = int(params['k'])
         params['zt'] = float(params['zt'])
-
 
     def start_button_pressed(self):
         params_are_correct = self._check_params_in_spinboxes()
         if params_are_correct:
 
             params = self.get_params_from_spinboxes()
-            self.params_to_didigts(params)
+            self.params_to_digits(params)
+            if self.list_delta.get() == "Волновая":
+                self.talbot = TalbotMath(params['p'], 0, 1)
+            else:
+                self.talbot = TalbotMath(params['p'], 1, 400, params['b'])
+
             z_start = 0
             z_end = params['zt'] * 2 * params['p'] * params['p'] / (5 * 10 ** (-7))
             x_start = params['k'] * params['p'] * -1
