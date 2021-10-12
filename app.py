@@ -159,13 +159,14 @@ class Window(tk.Tk):
     def start_button_pressed(self):
         params_are_correct = self._check_params_in_spinboxes()
         if params_are_correct:
-
             params = self.get_params_from_spinboxes()
             self.params_to_digits(params)
             if self.list_delta.get() == "Волновая":
-                self.talbot = TalbotMath(params['p'], 0, 1)
+                params['n'] = 1
+                self.talbot = TalbotMath(params['p'], 0, params['n'])
             else:
-                self.talbot = TalbotMath(params['p'], 1, 400, params['b'])
+                params['n'] = 400
+                self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
             z_start = 0
             z_end = params['zt'] * 2 * params['p'] * params['p'] / (5 * 10 ** (-7))
