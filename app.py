@@ -168,6 +168,14 @@ class Window(tk.Tk):
     def stop_button_pressed(self):
         print(2)
 
+    def delete_parameters(self):
+        self.spinboxes_labels['p'].destroy()
+        self.spinboxes['p'].destroy()
+        self.spinboxes_labels['k'].destroy()
+        self.spinboxes['k'].destroy()
+        self.spinboxes_labels['zt'].destroy()
+        self.spinboxes['zt'].destroy()
+
     def list_delta_changed(self, index, value, op):
         if self.spinboxes_labels is None:
             return
@@ -179,13 +187,7 @@ class Window(tk.Tk):
                 self.spinboxes['b'].destroy()
                 self.spinboxes.pop('b')
                 self.spinboxes_labels.pop('b')
-                self.spinboxes_labels['p'].destroy()
-                self.spinboxes['p'].destroy()
-                self.spinboxes_labels['k'].destroy()
-                self.spinboxes['k'].destroy()
-                self.spinboxes_labels['zt'].destroy()
-                self.spinboxes['zt'].destroy()
-                print(self.spinboxes)
+                self.delete_parameters()
                 self.create_spinboxes()
                 self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
                                        pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
@@ -197,12 +199,7 @@ class Window(tk.Tk):
         else:
             if self.array_of_spinboxes != spinboxes_to_create_rect:
                 self.array_of_spinboxes = spinboxes_to_create_rect
-                self.spinboxes_labels['p'].destroy()
-                self.spinboxes['p'].destroy()
-                self.spinboxes_labels['k'].destroy()
-                self.spinboxes['k'].destroy()
-                self.spinboxes_labels['zt'].destroy()
-                self.spinboxes['zt'].destroy()
+                self.delete_parameters()
                 self.create_spinboxes()
                 self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
                                        pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
