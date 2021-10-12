@@ -197,6 +197,12 @@ class Window(tk.Tk):
         else:
             if self.array_of_spinboxes != spinboxes_to_create_rect:
                 self.array_of_spinboxes = spinboxes_to_create_rect
+                self.spinboxes_labels['p'].destroy()
+                self.spinboxes['p'].destroy()
+                self.spinboxes_labels['k'].destroy()
+                self.spinboxes['k'].destroy()
+                self.spinboxes_labels['zt'].destroy()
+                self.spinboxes['zt'].destroy()
                 self.create_spinboxes()
                 self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
                                        pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
