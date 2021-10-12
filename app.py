@@ -117,6 +117,11 @@ class Window(tk.Tk):
         # create Spinboxes
         self.create_spinboxes()
 
+    def _from_rgb(rgb):
+        """translates an rgb tuple of int to a tkinter friendly color code
+        """
+        return "#%02x%02x%02x" % rgb
+
     def fill_working_area(self, x_start, x_end, z_start, z_end):
         COLOR_MAX = 255
 
@@ -152,8 +157,9 @@ class Window(tk.Tk):
         for x in range(self.system.WORKING_AREA_SIZE):
             for y in range(self.system.WORKING_AREA_SIZE):
                 color = (int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale))
-
-                self.canvas.create_line(x, y, x, y, width=1, fill=color)
+                x1, y1 = (x - 1), (y - 1)
+                x2, y2 = (x + 1), (y + 1)
+                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=_from_rgb(color))
 
     def _check_params_in_spinboxes(self):
         params_are_correct = None
