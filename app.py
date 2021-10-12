@@ -1,21 +1,24 @@
-
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
-from tkinter import filedialog as fd
-import os
-import glob
 from sys import platform
-from math import *
-import re
+
 from config_spinboxes import *
-import config_gui as mac
+import config_gui_win as windows
+import config_gui_mac_lin as mac
 
 class Window(tk.Tk):
     def __init__(self):
         super(Window, self).__init__()
         self.spinboxes = dict()
-        self.system = mac
+        self.system = None
+        if platform == "win32":
+            self.system = windows
+        elif platform == "darwin" or platform == "linux":
+            self.system = mac
+        else:
+            self.destroy()
+
         self.array_of_spinboxes = spinboxes_to_create_wave
         # basic config of app
         self.title("Эффект Талбота")
@@ -32,7 +35,8 @@ class Window(tk.Tk):
         self._create_working_area()
 
     def closing_window(self):
-        if mb.askokcancel("Выход", "{:}\n{:}".format("Вы уверены, что хотите выйти?", "Все изменений несохраненные изменения пропадут")):
+        if mb.askokcancel("Выход", "{:}\n{:}".format("Вы уверены, что хотите выйти?",
+                                                     "Все изменений несохраненные изменения пропадут")):
             self.destroy()
 
     def _create_working_area(self):
@@ -62,6 +66,7 @@ class Window(tk.Tk):
             self.spinboxes.update({item['name']: spinbox})
             self.spinboxes_labels.update({item['name']: label})
 
+
     def create_btns(self):
         self.start_button = tk.Button(self.field_with_parameters, text='Старт', command=self.start_button_pressed)
         # spinboxes_to_create
@@ -83,7 +88,7 @@ class Window(tk.Tk):
 
         # create ComboboxList
         self.list_delta_label = tk.Label(self.field_with_parameters, text="Тип решетки:", anchor='w',
-                             width=self.system.FIELD_WITH_PARAMETERS_LABEL_WIDTH)
+                                         width=self.system.FIELD_WITH_PARAMETERS_LABEL_WIDTH)
         self.list_delta_label.grid(row=0, column=0, pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
 
         self.list_delta_text_var = tk.StringVar()
@@ -136,33 +141,26 @@ class Window(tk.Tk):
         for name, spinbox in self.spinboxes.items():
             params.update({name: spinbox.get()})
 
-        if self.list_delta.get() == 'частоту':
-            params.update({"delta_type_nu": 1})
-        else:
-            params.update({"delta_type_nu": 0})
-
-
         return params
 
     def set_params_to_spinboxes(self, params):
         for name, value in params.items():
-            if name == 'delta_type_nu':  # слегка костыль
-                continue
             self.spinboxes[name].delete(0, len(self.spinboxes[name].get()))
             self.spinboxes[name].insert(0, value)
 
-        self.pendulums.time = float(self.spinboxes['time'].get())
-
-        self.list_delta.current(1)
-        if params['delta_type_nu']:
-            self.list_delta.current(0)
 
         # ДЛЯ ЖЕНИ! ВАЖНО! Теперь эта функция не устанавливает параметры маятников !!!
 
     def start_button_pressed(self):
         params_are_correct = self._check_params_in_spinboxes()
         if params_are_correct:
-            print(1)
+
+            params = self.get_params_from_spinboxes()
+            params['p'] = float(params['p']) / 1000
+            # здесь вызов ф-ции отрисовки, туда передаёшь params
+            # в парамс все переменные
+            # ничего не меняй при вводе, запускай с дефолтными
+            print(params)
 
         else:
             self.stop_button_pressed()
@@ -183,6 +181,10 @@ class Window(tk.Tk):
                 self.spinboxes_labels.pop('b')
                 self.spinboxes_labels['p'].destroy()
                 self.spinboxes['p'].destroy()
+                self.spinboxes_labels['k'].destroy()
+                self.spinboxes['k'].destroy()
+                self.spinboxes_labels['zt'].destroy()
+                self.spinboxes['zt'].destroy()
                 print(self.spinboxes)
                 self.create_spinboxes()
                 self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
@@ -199,11 +201,13 @@ class Window(tk.Tk):
                 self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
                                        pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
                 self.stop_button.grid(row=len(self.array_of_spinboxes) + 1, column=1,
-                                       pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
+                                      pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
+
 
 def main():
     window = Window()
     window.mainloop()
+
 
 if __name__ == "__main__":
     main()
