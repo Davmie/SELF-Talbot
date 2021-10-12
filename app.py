@@ -164,7 +164,7 @@ class Window(tk.Tk):
             params = self.get_params_from_spinboxes()
             self.params_to_didigts(params)
             z_start = 0
-            z_end = params['zt'] * 2 * params['p'] * params['p'] / (5 * 10 ** (-2))
+            z_end = params['zt'] * 2 * params['p'] * params['p'] / (5 * 10 ** (-7))
             x_start = params['k'] * params['p'] * -1
             x_end = params['k'] * params['p']
             print(z_start, z_end, x_start, x_end)
