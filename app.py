@@ -117,7 +117,7 @@ class Window(tk.Tk):
         # create Spinboxes
         self.create_spinboxes()
 
-    def _from_rgb(rgb):
+    def _from_rgb(self, rgb):
         """translates an rgb tuple of int to a tkinter friendly color code
         """
         return "#%02x%02x%02x" % rgb
@@ -159,7 +159,7 @@ class Window(tk.Tk):
                 color = (int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)
                 x2, y2 = (x + 1), (y + 1)
-                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=_from_rgb(color))
+                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=self._from_rgb(color))
 
     def _check_params_in_spinboxes(self):
         params_are_correct = None
