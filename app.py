@@ -82,7 +82,7 @@ class Window(tk.Tk):
     def _create_field_with_parameters(self):
         # base frame
 
-        self.field_with_parameters.grid(row=0, column=3)
+        self.field_with_parameters.grid(row=0, column=2)
         self.field_with_parameters.grid_propagate(False)
 
         # buttons
