@@ -117,6 +117,50 @@ class Window(tk.Tk):
         # create Spinboxes
         self.create_spinboxes()
 
+    def _from_rgb(rgb):
+        """translates an rgb tuple of int to a tkinter friendly color code
+        """
+        return "#%02x%02x%02x" % rgb
+
+    def fill_working_area(self, x_start, x_end, z_start, z_end):
+        COLOR_MAX = 255
+
+
+        x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
+        z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
+        print(x_end, x_start, z_end, z_start)
+
+        intens = []
+
+        for i in range(self.system.WORKING_AREA_SIZE):
+            intens.append([0]*self.system.WORKING_AREA_SIZE)
+
+        i_max = i_min = self.talbot.I(x_start, z_start)
+
+        for x in range(self.system.WORKING_AREA_SIZE):
+            for y in range(self.system.WORKING_AREA_SIZE):
+                print((y) * x_scale + x_start, x * z_scale + z_start)
+                intens[x][y]= self.talbot.I((y) * x_scale + x_start, x * z_scale + z_start)
+
+                if i_max > intens[x][y]:
+                    i_max = intens[x][y]
+
+                if i_min < intens[x][y]:
+                    i_min = intens[x][y]
+
+        if not(i_max - i_min):
+            color_scale = 0
+        else:
+            color_scale = COLOR_MAX / (i_max - i_min)
+
+
+        for x in range(self.system.WORKING_AREA_SIZE):
+            for y in range(self.system.WORKING_AREA_SIZE):
+                color = (int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale))
+                x1, y1 = (x - 1), (y - 1)
+                x2, y2 = (x + 1), (y + 1)
+                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=_from_rgb(color))
+
     def _check_params_in_spinboxes(self):
         params_are_correct = None
         try:
@@ -174,9 +218,8 @@ class Window(tk.Tk):
             x_start = params['k'] * params['p'] * -1
             x_end = params['k'] * params['p']
             print(z_start, z_end, x_start, x_end)
-            # здесь вызов ф-ции отрисовки, туда передаёшь params
-            # в парамс все переменные
-            # ничего не меняй при вводе, запускай с дефолтными
+
+            self.fill_working_area(x_start, x_end, z_start, z_end)
 
         else:
             self.stop_button_pressed()
