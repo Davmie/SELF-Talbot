@@ -166,6 +166,7 @@ class Window(tk.Tk):
                 self.talbot = TalbotMath(params['p'], 0, params['n'])
             else:
                 params['n'] = 400
+                params['b'] = float(params['b']) / 1000
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
             z_start = 0
