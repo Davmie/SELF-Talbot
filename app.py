@@ -129,7 +129,6 @@ class Window(tk.Tk):
 
         x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
         z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
-        print(x_end, x_start, z_end, z_start)
 
         intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
 
@@ -159,7 +158,8 @@ class Window(tk.Tk):
                          int((intense[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)
                 x2, y2 = (x + 1), (y + 1)
-                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=self._from_rgb(color))
+                filling = self._from_rgb(color)
+                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=filling)
 
         # for i in range(100, 150, 1):
         #     print(intense[i][:10])
@@ -199,7 +199,7 @@ class Window(tk.Tk):
 
     @staticmethod
     def params_to_digits(params):
-        params['p'] = float(params['p']) / 1000000000
+        params['p'] = float(params['p']) / 1000
         params['k'] = int(params['k'])
         params['zt'] = float(params['zt'])
 
@@ -220,7 +220,6 @@ class Window(tk.Tk):
             z_end = params['zt'] * 2 * params['p'] * params['p'] / self.talbot.l
             x_start = params['k'] * params['p'] * -1
             x_end = params['k'] * params['p']
-            print(z_start, z_end, x_start, x_end)
 
             self.fill_working_area(x_start, x_end, z_start, z_end)
 
@@ -228,7 +227,7 @@ class Window(tk.Tk):
             self.stop_button_pressed()
 
     def stop_button_pressed(self):
-        print(2)
+        pass
 
     def delete_parameters(self):
         self.spinboxes_labels['p'].destroy()
