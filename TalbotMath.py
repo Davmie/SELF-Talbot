@@ -1,4 +1,4 @@
-from math import cos, pi, exp, sqrt
+from math import cos, pi, exp, sqrt, sin
 
 from scipy.integrate import quad
 
@@ -20,20 +20,29 @@ class TalbotMath:
         self.k = (2 * pi) / self.l
 
     def I(self, x, z):
-        return (abs(self.f(x, z))) ** 2
-
-    def f(self, x, z):
-        sum = 0
+        sum_r = 0
+        sum_i = 0
         for i in range(-self.n, self.n + 1):
-            omega_n = self.n * self.omega
-            sum += self.fn(x, omega_n) * \
-                   exp(1j.imag * (omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z))
+            omega_n = i * self.omega
+            sum_r += self.fr(x, z, omega_n)
+            sum_i += self.fi(x, z, omega_n)
+                   #exp((1j * (omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z)).imag)
 
-        return sum
+        return sum_r ** 2 + sum_i ** 2
+    
+    def fr(self, x, z, omega_n):
+        return self.fn_r(omega_n) * cos(omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z) - self.fn_i(omega_n) * sin(omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z)
+        
+    def fi(self, x, z, omega_n):
+        return  self.fn_i(omega_n) * cos(omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z) + self.fn_r(omega_n) * sin(omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z)
 
-    def fn(self, x, omega_n):
+    def fn_r(self, omega_n):
         return 1.0 / self.p * quad(
-            lambda x: self.f0(x) * exp(-1j.imag * omega_n * x), -self.p / 2, self.p / 2)[0]
+            lambda x : self.f0(x) * (cos(omega_n * x)), -self.p / 2, self.p / 2)[0]
+
+    def fn_i(self, omega_n):
+        return 1.0 / self.p * quad(
+            lambda x : self.f0(x) * (-(sin(omega_n * x))), -self.p / 2, self.p / 2)[0]
 
     def f0(self, x):
         coef = 2 * pi * x / self.p

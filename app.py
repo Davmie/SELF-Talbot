@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
@@ -6,6 +8,8 @@ from sys import platform
 from config_spinboxes import *
 import config_gui_win as windows
 import config_gui_mac_lin as mac
+from TalbotMath import *
+
 
 class Window(tk.Tk):
     def __init__(self):
@@ -19,6 +23,7 @@ class Window(tk.Tk):
         else:
             self.destroy()
 
+        self.talbot = TalbotMath(1, 0, 1)
         self.array_of_spinboxes = spinboxes_to_create_wave
         # basic config of app
         self.title("Эффект Талбота")
@@ -66,7 +71,6 @@ class Window(tk.Tk):
             self.spinboxes.update({item['name']: spinbox})
             self.spinboxes_labels.update({item['name']: label})
 
-
     def create_btns(self):
         self.start_button = tk.Button(self.field_with_parameters, text='Старт', command=self.start_button_pressed)
         # spinboxes_to_create
@@ -80,7 +84,7 @@ class Window(tk.Tk):
     def _create_field_with_parameters(self):
         # base frame
 
-        self.field_with_parameters.grid(row=0, column=3)
+        self.field_with_parameters.grid(row=0, column=2)
         self.field_with_parameters.grid_propagate(False)
 
         # buttons
@@ -115,6 +119,51 @@ class Window(tk.Tk):
         # create Spinboxes
         self.create_spinboxes()
 
+    def _from_rgb(self, rgb):
+        """translates an rgb tuple of int to a tkinter friendly color code
+        """
+        return "#%02x%02x%02x" % rgb
+
+    def fill_working_area(self, x_start, x_end, z_start, z_end):
+        COLOR_MAX = 255
+
+        x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
+        z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
+
+        intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
+
+        i_max = i_min = self.talbot.I(x_start, z_start)
+
+        for x in range(self.system.WORKING_AREA_SIZE):
+            for y in range(self.system.WORKING_AREA_SIZE):
+                # print((y) * x_scale + x_start, x * z_scale + z_start)
+                intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
+
+                if i_max < intense[x][y]:
+                    i_max = intense[x][y]
+
+                if i_min > intense[x][y]:
+                    i_min = intense[x][y]
+
+        if not (i_max - i_min):
+            color_scale = 0
+        else:
+            color_scale = COLOR_MAX / (i_max - i_min)
+
+        # print(i_min, i_max, color_scale)
+
+        for x in range(self.system.WORKING_AREA_SIZE):
+            for y in range(self.system.WORKING_AREA_SIZE):
+                color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
+                         int((intense[x][y] - i_min) * color_scale))
+                x1, y1 = (x - 1), (y - 1)
+                x2, y2 = (x + 1), (y + 1)
+                filling = self._from_rgb(color)
+                self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=filling)
+
+        # for i in range(100, 150, 1):
+        #     print(intense[i][:10])
+
     def _check_params_in_spinboxes(self):
         params_are_correct = None
         try:
@@ -148,25 +197,37 @@ class Window(tk.Tk):
             self.spinboxes[name].delete(0, len(self.spinboxes[name].get()))
             self.spinboxes[name].insert(0, value)
 
-
-        # ДЛЯ ЖЕНИ! ВАЖНО! Теперь эта функция не устанавливает параметры маятников !!!
+    @staticmethod
+    def params_to_digits(params):
+        params['p'] = float(params['p']) / 1000
+        params['k'] = int(params['k'])
+        params['zt'] = float(params['zt'])
 
     def start_button_pressed(self):
         params_are_correct = self._check_params_in_spinboxes()
         if params_are_correct:
-
             params = self.get_params_from_spinboxes()
-            params['p'] = float(params['p']) / 1000
-            # здесь вызов ф-ции отрисовки, туда передаёшь params
-            # в парамс все переменные
-            # ничего не меняй при вводе, запускай с дефолтными
-            print(params)
+            self.params_to_digits(params)
+            if self.list_delta.get() == "Волновая":
+                params['n'] = 1
+                self.talbot = TalbotMath(params['p'], 0, params['n'])
+            else:
+                params['n'] = 400
+                params['b'] = float(params['b']) / 1000
+                self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
+
+            z_start = 0
+            z_end = params['zt'] * 2 * params['p'] * params['p'] / self.talbot.l
+            x_start = params['k'] * params['p'] * -1
+            x_end = params['k'] * params['p']
+
+            self.fill_working_area(x_start, x_end, z_start, z_end)
 
         else:
             self.stop_button_pressed()
 
     def stop_button_pressed(self):
-        print(2)
+        pass
 
     def delete_parameters(self):
         self.spinboxes_labels['p'].destroy()
