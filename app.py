@@ -8,6 +8,7 @@ import config_gui_win as windows
 import config_gui_mac_lin as mac
 from TalbotMath import *
 
+
 class Window(tk.Tk):
     def __init__(self):
         super(Window, self).__init__()
@@ -68,7 +69,6 @@ class Window(tk.Tk):
             self.spinboxes.update({item['name']: spinbox})
             self.spinboxes_labels.update({item['name']: label})
 
-
     def create_btns(self):
         self.start_button = tk.Button(self.field_with_parameters, text='Старт', command=self.start_button_pressed)
         # spinboxes_to_create
@@ -125,41 +125,40 @@ class Window(tk.Tk):
     def fill_working_area(self, x_start, x_end, z_start, z_end):
         COLOR_MAX = 255
 
-
         x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
         z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
         print(x_end, x_start, z_end, z_start)
 
-        intens = []
-
-        for i in range(self.system.WORKING_AREA_SIZE):
-            intens.append([0]*self.system.WORKING_AREA_SIZE)
+        intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
 
         i_max = i_min = self.talbot.I(x_start, z_start)
 
         for x in range(self.system.WORKING_AREA_SIZE):
             for y in range(self.system.WORKING_AREA_SIZE):
-                print((y) * x_scale + x_start, x * z_scale + z_start)
-                intens[x][y]= self.talbot.I((y) * x_scale + x_start, x * z_scale + z_start)
+                # print((y) * x_scale + x_start, x * z_scale + z_start)
+                intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
 
-                if i_max > intens[x][y]:
-                    i_max = intens[x][y]
+                if i_max < intense[x][y]:
+                    i_max = intense[x][y]
 
-                if i_min < intens[x][y]:
-                    i_min = intens[x][y]
+                if i_min > intense[x][y]:
+                    i_min = intense[x][y]
 
-        if not(i_max - i_min):
+        if not (i_max - i_min):
             color_scale = 0
         else:
             color_scale = COLOR_MAX / (i_max - i_min)
 
-
         for x in range(self.system.WORKING_AREA_SIZE):
             for y in range(self.system.WORKING_AREA_SIZE):
-                color = (int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale), int((intens[x][y] - i_min) * color_scale))
+                color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
+                         int((intense[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)
                 x2, y2 = (x + 1), (y + 1)
                 self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=self._from_rgb(color))
+
+        for i in range(self.system.WORKING_AREA_SIZE):
+            print(intense[i])
 
     def _check_params_in_spinboxes(self):
         params_are_correct = None
@@ -196,7 +195,7 @@ class Window(tk.Tk):
 
     @staticmethod
     def params_to_digits(params):
-        params['p'] = float(params['p']) / 1000
+        params['p'] = float(params['p']) / 1000000000
         params['k'] = int(params['k'])
         params['zt'] = float(params['zt'])
 
@@ -214,7 +213,7 @@ class Window(tk.Tk):
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
             z_start = 0
-            z_end = params['zt'] * 2 * params['p'] * params['p'] / (5 * 10 ** (-7))
+            z_end = params['zt'] * 2 * params['p'] * params['p'] / self.talbot.l
             x_start = params['k'] * params['p'] * -1
             x_end = params['k'] * params['p']
             print(z_start, z_end, x_start, x_end)

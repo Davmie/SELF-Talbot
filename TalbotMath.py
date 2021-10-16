@@ -1,4 +1,4 @@
-from math import cos, pi, exp, sqrt
+from math import cos, pi, exp, sqrt, inf
 
 from scipy.integrate import quad
 
@@ -14,7 +14,7 @@ class TalbotMath:
         self.b = b
         self.n = n
 
-        self.l = 5 * 10 ** (-7)
+        self.l = 5 * 10 ** (-9)
 
         self.omega = (2 * pi) / self.p
         self.k = (2 * pi) / self.l
@@ -25,7 +25,7 @@ class TalbotMath:
     def f(self, x, z):
         sum = 0
         for i in range(-self.n, self.n + 1):
-            omega_n = self.n * self.omega
+            omega_n = i * self.omega
             sum += self.fn(x, omega_n) * \
                    exp(1j.imag * (omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z))
 

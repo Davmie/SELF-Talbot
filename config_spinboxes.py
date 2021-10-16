@@ -13,7 +13,7 @@ spinboxes_to_create_rect = [
         'label': 'Период',
         'type': float,
         'min_value': 0.1,
-        'max_value': 2,
+        'max_value': 10,
         'step': 0.1,
         'default_value': 1,
     },
@@ -43,9 +43,9 @@ spinboxes_to_create_wave = [
         'label': 'Период',
         'type': float,
         'min_value': 0.1,
-        'max_value': 2,
+        'max_value': 10,
         'step': 0.1,
-        'default_value': 1,
+        'default_value': 5,
     },
     {
         'name': 'k',
@@ -63,6 +63,6 @@ spinboxes_to_create_wave = [
         'min_value': 0,
         'max_value': 1,
         'step': 0.05,
-        'default_value': 0.4,
+        'default_value': 1,
     },
 ]
