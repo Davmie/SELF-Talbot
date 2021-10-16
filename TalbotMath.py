@@ -26,14 +26,16 @@ class TalbotMath:
         sum = 0
         for i in range(-self.n, self.n + 1):
             omega_n = i * self.omega
-            sum += self.fn(x, omega_n) * \
-                   exp(1j.imag * (omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z))
+            sum += self.fn(omega_n) * \
+                   exp((1j * (omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z)).imag)
+
+            print(self.fn(omega_n))
 
         return sum
 
-    def fn(self, x, omega_n):
+    def fn(self, omega_n):
         return 1.0 / self.p * quad(
-            lambda x: self.f0(x) * exp(-1j.imag * omega_n * x), -self.p / 2, self.p / 2)[0]
+            lambda x : self.f0(x) * exp((-1j * omega_n * x).imag), -self.p / 2, self.p / 2)[0]
 
     def f0(self, x):
         coef = 2 * pi * x / self.p

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
@@ -149,6 +151,8 @@ class Window(tk.Tk):
         else:
             color_scale = COLOR_MAX / (i_max - i_min)
 
+        # print(i_min, i_max, color_scale)
+
         for x in range(self.system.WORKING_AREA_SIZE):
             for y in range(self.system.WORKING_AREA_SIZE):
                 color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
@@ -157,8 +161,8 @@ class Window(tk.Tk):
                 x2, y2 = (x + 1), (y + 1)
                 self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=self._from_rgb(color))
 
-        for i in range(self.system.WORKING_AREA_SIZE):
-            print(intense[i])
+        # for i in range(100, 150, 1):
+        #     print(intense[i][:10])
 
     def _check_params_in_spinboxes(self):
         params_are_correct = None
