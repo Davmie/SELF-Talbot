@@ -125,18 +125,17 @@ class Window(tk.Tk):
     def fill_working_area(self, x_start, x_end, z_start, z_end):
         COLOR_MAX = 255
 
-        x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
-        z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
+        x_scale = (x_end - x_start) / self.canvas.winfo_width()
+        z_scale = (z_end - z_start) / self.canvas.winfo_width()
 
-        intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
+        intense = [[0 for _ in range(self.canvas.winfo_height())] for _ in range(self.canvas.winfo_width())]
 
         i_max = i_min = self.talbot.I(x_start, z_start)
 
-        for x in range(0, self.system.WORKING_AREA_SIZE):
-            for y in range(0, self.system.WORKING_AREA_SIZE):
-                if x % 100 == 0 and x > 0 and y == 0:
-                    print(x)
+        for x in range(self.canvas.winfo_width()):
+            for y in range(self.canvas.winfo_height()):
                 intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
+          
                 if i_max < intense[x][y]:
                     i_max = intense[x][y]
 
@@ -148,8 +147,8 @@ class Window(tk.Tk):
         else:
             color_scale = COLOR_MAX / (i_max - i_min)
 
-        for x in range(self.system.WORKING_AREA_SIZE):
-            for y in range(self.system.WORKING_AREA_SIZE):
+        for x in range(self.canvas.winfo_width()):
+            for y in range(self.canvas.winfo_height()):
                 color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
                          int((intense[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)
