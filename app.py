@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
 from sys import platform
+from multiprocessing import Pool, cpu_count
+from numpy import reshape, array
 
 from config_spinboxes import *
 import config_gui_win as windows
@@ -128,20 +130,37 @@ class Window(tk.Tk):
         x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
         z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
 
-        intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
+        pixels = []
+        for i in range(0, self.system.WORKING_AREA_SIZE):
+            for j in range(0, self.system.WORKING_AREA_SIZE):
+                pixels.append([j * x_scale + x_start, i * z_scale + z_start])
 
-        i_max = i_min = self.talbot.I(x_start, z_start)
+        with Pool(cpu_count()) as p:
+            intense = array(p.starmap(self.talbot.I, pixels)).reshape(self.system.WORKING_AREA_SIZE, self.system.WORKING_AREA_SIZE)
 
-        for x in range(0, self.system.WORKING_AREA_SIZE):
-            for y in range(0, self.system.WORKING_AREA_SIZE):
-                if x % 100 == 0 and x > 0 and y == 0:
-                    print(x)
-                intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
-                if i_max < intense[x][y]:
-                    i_max = intense[x][y]
+        i_min = i_max = intense[0][0]
 
-                if i_min > intense[x][y]:
-                    i_min = intense[x][y]
+        for i in range(self.system.WORKING_AREA_SIZE):
+            for j in range(self.system.WORKING_AREA_SIZE):
+                if i_max < intense[i][j]:
+                    i_max = intense[i][j]
+
+                if i_min > intense[i][j]:
+                    i_min = intense[i][j]
+
+        # i_max = i_min = self.talbot.I(x_start, z_start)
+
+        # for x in range(0, self.system.WORKING_AREA_SIZE):
+        #     for y in range(0, self.system.WORKING_AREA_SIZE):
+        #         if x % 100 == 0 and x > 0 and y == 0:
+        #             print(x)
+        #         intense[x][y] = self.talbot.I((-y) * x_scale + x_start, x * z_scale + z_start)
+
+        #         if i_max < intense[x][y]:
+        #             i_max = intense[x][y]
+
+        #         if i_min > intense[x][y]:
+        #             i_min = intense[x][y]
 
         if not (i_max - i_min):
             color_scale = 0
