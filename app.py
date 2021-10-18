@@ -127,48 +127,34 @@ class Window(tk.Tk):
     def fill_working_area(self, x_start, x_end, z_start, z_end):
         COLOR_MAX = 255
 
-        x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
-        z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
+        x_scale = (x_end - x_start) / self.canvas.winfo_width()
+        z_scale = (z_end - z_start) / self.canvas.winfo_width()
 
         pixels = []
-        for i in range(0, self.system.WORKING_AREA_SIZE):
-            for j in range(0, self.system.WORKING_AREA_SIZE):
+        for i in range(0, self.canvas.winfo_width()):
+            for j in range(0, self.canvas.winfo_height()):
                 pixels.append([j * x_scale + x_start, i * z_scale + z_start])
 
         with Pool(cpu_count()) as p:
-            intense = array(p.starmap(self.talbot.I, pixels)).reshape(self.system.WORKING_AREA_SIZE, self.system.WORKING_AREA_SIZE)
+            intense = array(p.starmap(self.talbot.I, pixels)).reshape(self.canvas.winfo_width(), self.canvas.winfo_height())
 
         i_min = i_max = intense[0][0]
 
-        for i in range(self.system.WORKING_AREA_SIZE):
-            for j in range(self.system.WORKING_AREA_SIZE):
+        for i in range(self.canvas.winfo_width()):
+            for j in range(self.canvas.winfo_height()):
                 if i_max < intense[i][j]:
                     i_max = intense[i][j]
 
                 if i_min > intense[i][j]:
                     i_min = intense[i][j]
 
-        # i_max = i_min = self.talbot.I(x_start, z_start)
-
-        # for x in range(0, self.system.WORKING_AREA_SIZE):
-        #     for y in range(0, self.system.WORKING_AREA_SIZE):
-        #         if x % 100 == 0 and x > 0 and y == 0:
-        #             print(x)
-        #         intense[x][y] = self.talbot.I((-y) * x_scale + x_start, x * z_scale + z_start)
-
-        #         if i_max < intense[x][y]:
-        #             i_max = intense[x][y]
-
-        #         if i_min > intense[x][y]:
-        #             i_min = intense[x][y]
-
         if not (i_max - i_min):
             color_scale = 0
         else:
             color_scale = COLOR_MAX / (i_max - i_min)
 
-        for x in range(self.system.WORKING_AREA_SIZE):
-            for y in range(self.system.WORKING_AREA_SIZE):
+        for x in range(self.canvas.winfo_width()):
+            for y in range(self.canvas.winfo_height()):
                 color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
                          int((intense[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)

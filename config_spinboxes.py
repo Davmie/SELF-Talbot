@@ -19,7 +19,7 @@ spinboxes_to_create_rect = [
     },
     {
         'name': 'k',
-        'label': 'x = [-kx; kx]\nk',
+        'label': 'x = [-kp; kp]\nk',
         'type': int,
         'min_value': 1,
         'max_value': 10,
@@ -49,7 +49,7 @@ spinboxes_to_create_wave = [
     },
     {
         'name': 'k',
-        'label': 'x = [-kx; kx]\nk',
+        'label': 'x = [-kp; kp]\nk',
         'type': int,
         'min_value': 1,
         'max_value': 40,
