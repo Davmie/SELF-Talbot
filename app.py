@@ -127,10 +127,10 @@ class Window(tk.Tk):
     def fill_working_area(self, x_start, x_end, z_start, z_end):
         COLOR_MAX = 255
 
-        x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
-        z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
+        x_scale = (x_end - x_start) / self.canvas.winfo_width()
+        z_scale = (z_end - z_start) / self.canvas.winfo_width()
 
-        intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
+        intense = [[0 for _ in range(self.canvas.winfo_width())] for _ in range(self.canvas.winfo_width())]
 
         i_max = i_min = self.talbot.I(x_start, z_start)
 
