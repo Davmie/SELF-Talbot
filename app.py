@@ -134,8 +134,8 @@ class Window(tk.Tk):
 
         i_max = i_min = self.talbot.I(x_start, z_start)
 
-        for x in range(self.system.WORKING_AREA_SIZE):
-            for y in range(self.system.WORKING_AREA_SIZE):
+        for x in range(self.canvas.winfo_width()):
+            for y in range(self.canvas.winfo_width()):
                 # print((y) * x_scale + x_start, x * z_scale + z_start)
                 intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
 
@@ -152,8 +152,8 @@ class Window(tk.Tk):
 
         # print(i_min, i_max, color_scale)
 
-        for x in range(self.system.WORKING_AREA_SIZE):
-            for y in range(self.system.WORKING_AREA_SIZE):
+        for x in range(self.canvas.winfo_width()):
+            for y in range(self.canvas.winfo_width()):
                 color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
                          int((intense[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)
