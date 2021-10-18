@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
@@ -136,9 +134,8 @@ class Window(tk.Tk):
 
         for x in range(self.canvas.winfo_width()):
             for y in range(self.canvas.winfo_height()):
-                # print((y) * x_scale + x_start, x * z_scale + z_start)
                 intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
-
+          
                 if i_max < intense[x][y]:
                     i_max = intense[x][y]
 
@@ -150,8 +147,6 @@ class Window(tk.Tk):
         else:
             color_scale = COLOR_MAX / (i_max - i_min)
 
-        # print(i_min, i_max, color_scale)
-
         for x in range(self.canvas.winfo_width()):
             for y in range(self.canvas.winfo_height()):
                 color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
@@ -160,9 +155,6 @@ class Window(tk.Tk):
                 x2, y2 = (x + 1), (y + 1)
                 filling = self._from_rgb(color)
                 self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=filling)
-
-        # for i in range(100, 150, 1):
-        #     print(intense[i][:10])
 
     def _check_params_in_spinboxes(self):
         params_are_correct = None
