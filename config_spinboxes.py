@@ -35,6 +35,15 @@ spinboxes_to_create_rect = [
         'step': 0.05,
         'default_value': 0.4,
     },
+    {
+        'name': 'z0',
+        'label': 'z0 график',
+        'type': float,
+        'min_value': 0,
+        'max_value': 1,
+        'step': 0.05,
+        'default_value': 0.2
+    },
 ]
 
 spinboxes_to_create_wave = [
@@ -64,5 +73,14 @@ spinboxes_to_create_wave = [
         'max_value': 5,
         'step': 0.05,
         'default_value': 1,
+    },
+    {
+        'name': 'z0',
+        'label': 'z0 график',
+        'type': float,
+        'min_value': 0,
+        'max_value': 1,
+        'step': 0.05,
+        'default_value': 0.2,
     },
 ]
