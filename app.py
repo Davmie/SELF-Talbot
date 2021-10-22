@@ -180,18 +180,23 @@ class Window(tk.Tk):
         except KeyError:
             scale = 2 / 7000
             z0 = 0.2 * 2 / (self.talbot.l * 1000000)
-        # граф по дефолту от -3 до 3
-        # если ковер от -7 до 7, то x_start надо умножить на kp/3
+        # граф по дефолту от -7 до 7
+        # если ковер от -7 до 7, то x_start надо умножить на kp/7
         points = []
         x_start = -7
         I0 = self.talbot.I(0, z0)
-        print(scale, z0)
-
+        print(I0)
+        arr_y = []
         while x_start <= 7.1:
             x = x_start
-            y = self.talbot.I(x * scale, z0) / I0
-            points.append((x * 50, -y * 100))
+            y = self.talbot.I(x * scale, z0)
+            arr_y.append(y)
+            points.append([x * 50, -y])
             x_start += 0.1
+        y_max = max(arr_y)
+        for i in range(len(points)):
+            points[i][1] /= y_max
+            points[i][1] *= 50
         graph.create_line(points, fill='blue')
 
     def _from_rgb(self, rgb):

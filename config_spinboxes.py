@@ -37,7 +37,7 @@ spinboxes_to_create_rect = [
     },
     {
         'name': 'z0',
-        'label': 'z0 график',
+        'label': 'z0 * Zt\nz0 (график)',
         'type': float,
         'min_value': 0,
         'max_value': 1,
@@ -76,7 +76,7 @@ spinboxes_to_create_wave = [
     },
     {
         'name': 'z0',
-        'label': 'z0 график',
+        'label': 'z0 * Zt\nz0 (график)',
         'type': float,
         'min_value': 0,
         'max_value': 1,
