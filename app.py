@@ -72,12 +72,12 @@ class Window(tk.Tk):
     def create_btns(self):
         self.start_button = tk.Button(self.field_with_parameters, text='Старт', command=self.start_button_pressed)
         # spinboxes_to_create
-        self.start_button.grid(row=len(self.array_of_spinboxes) + 2, column=0,
+        self.start_button.grid(row=len(self.array_of_spinboxes) + 2, column=0, columnspan=2,
                                pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
 
-        self.create_graph_button = tk.Button(self.field_with_parameters, text='График I(x, z0)',
+        self.create_graph_button = tk.Button(self.field_with_parameters, text='График I(x, m * Zt)',
                                       command=self.create_graph_button_pressed)
-        self.create_graph_button.grid(row=len(self.array_of_spinboxes) + 2, column=1,
+        self.create_graph_button.grid(row=len(self.array_of_spinboxes) + 3, column=0, columnspan=2,
                               pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
 
     def _create_field_with_parameters(self):
@@ -106,7 +106,7 @@ class Window(tk.Tk):
         # self.rect_delta = tk.Radiobutton(self.field_with_parameters, text='Прямоугольник', value='Прямоугольник',
         #                                  anchor='w', width=15)
 
-        self.list_delta = ttk.Combobox(self.field_with_parameters, values=["Волновая", "Щели"], state='readonly',
+        self.list_delta = ttk.Combobox(self.field_with_parameters, values=["Волновая", "Дискретная"], state='readonly',
                                        text="решетку", width=self.system.FIELD_WITH_PARAMETERS_SPINBOX_WIDTH,
                                        textvar=self.list_delta_text_var)
 
@@ -168,7 +168,7 @@ class Window(tk.Tk):
                 graph.create_text(12, -self.system.GRAPH_FRAME_WIDTH // 2 + 35, text="1.0", fill="purple", font=("Helvetica", "7"))
 
         # Лейблы
-        graph.create_text(30, -(self.system.GRAPH_FRAME_WIDTH // 2) + 14, text='I(x, z0)', fill="purple",
+        graph.create_text(30, -(self.system.GRAPH_FRAME_WIDTH // 2) + 14, text='I(x, m * Zt)', fill="purple",
                           font=("Helvetica", "10"))
         graph.create_text(self.system.GRAPH_FRAME_WIDTH // 2 - 18, 10, text='x', fill="purple", font=("Helvetica", "10"))
 
@@ -184,8 +184,7 @@ class Window(tk.Tk):
         # если ковер от -7 до 7, то x_start надо умножить на kp/7
         points = []
         x_start = -7
-        I0 = self.talbot.I(0, z0)
-        print(I0)
+
         arr_y = []
         while x_start <= 7.1:
             x = x_start
@@ -320,6 +319,8 @@ class Window(tk.Tk):
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
         self.graph_window = tk.Toplevel()
+        self.graph_window.resizable(False, False)
+        self.graph_window.title("График")
         self._create_graph()
 
     def delete_parameters(self):
@@ -340,9 +341,9 @@ class Window(tk.Tk):
                 self.spinboxes_labels.pop('b')
                 self.delete_parameters()
                 self.create_spinboxes()
-                self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
+                self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0, columnspan=2,
                                        pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
-                self.create_graph_button.grid(row=len(self.array_of_spinboxes) + 1, column=1,
+                self.create_graph_button.grid(row=len(self.array_of_spinboxes) + 2, column=0, columnspan=2,
                                       pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
             except KeyError:
                 pass
@@ -352,9 +353,9 @@ class Window(tk.Tk):
                 self.array_of_spinboxes = spinboxes_to_create_rect
                 self.delete_parameters()
                 self.create_spinboxes()
-                self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0,
+                self.start_button.grid(row=len(self.array_of_spinboxes) + 1, column=0, columnspan=2,
                                        pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
-                self.create_graph_button.grid(row=len(self.array_of_spinboxes) + 1, column=1,
+                self.create_graph_button.grid(row=len(self.array_of_spinboxes) + 2, column=0, columnspan=2,
                                       pady=self.system.FIELD_WITH_PARAMETERS_BUTTON_PADY)
 
 

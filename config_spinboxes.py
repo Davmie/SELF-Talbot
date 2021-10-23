@@ -19,7 +19,7 @@ spinboxes_to_create_rect = [
     },
     {
         'name': 'k',
-        'label': 'x = [-kp; kp]\nk',
+        'label': 'x = [-kp; kp]    k:',
         'type': int,
         'min_value': 1,
         'max_value': 10,
@@ -37,7 +37,7 @@ spinboxes_to_create_rect = [
     },
     {
         'name': 'z0',
-        'label': 'z0 * Zt\nz0 (график)',
+        'label': 'm * Zt\t    m:',
         'type': float,
         'min_value': 0,
         'max_value': 1,
@@ -58,7 +58,7 @@ spinboxes_to_create_wave = [
     },
     {
         'name': 'k',
-        'label': 'x = [-kp; kp]\nk',
+        'label': 'x = [-kp; kp]    k:',
         'type': int,
         'min_value': 1,
         'max_value': 40,
@@ -69,14 +69,14 @@ spinboxes_to_create_wave = [
         'name': 'zt',
         'label': 'Zt',
         'type': float,
-        'min_value': 0,
+        'min_value': 0.01,
         'max_value': 5,
         'step': 0.05,
         'default_value': 1,
     },
     {
         'name': 'z0',
-        'label': 'z0 * Zt\nz0 (график)',
+        'label': 'm * Zt\t    m:',
         'type': float,
         'min_value': 0,
         'max_value': 1,
