@@ -168,7 +168,7 @@ class Window(tk.Tk):
                 graph.create_text(12, -self.system.GRAPH_FRAME_WIDTH // 2 + 35, text="1.0", fill="purple", font=("Helvetica", "7"))
 
         # Лейблы
-        graph.create_text(30, -(self.system.GRAPH_FRAME_WIDTH // 2) + 14, text='I(x, m * Zt)', fill="purple",
+        graph.create_text(35, -(self.system.GRAPH_FRAME_WIDTH // 2) + 18, text='I(x, m * Zt)', fill="purple",
                           font=("Helvetica", "10"))
         graph.create_text(self.system.GRAPH_FRAME_WIDTH // 2 - 18, 10, text='x', fill="purple", font=("Helvetica", "10"))
 
@@ -191,11 +191,11 @@ class Window(tk.Tk):
             y = self.talbot.I(x * scale, z0)
             arr_y.append(y)
             points.append([x * 50, -y])
-            x_start += 0.1
+            x_start += 0.001
         y_max = max(arr_y)
         for i in range(len(points)):
             points[i][1] /= y_max
-            points[i][1] *= 50
+            points[i][1] *= 100
         graph.create_line(points, fill='blue')
 
     def _from_rgb(self, rgb):
@@ -208,7 +208,6 @@ class Window(tk.Tk):
 
         x_scale = (x_end - x_start) / self.canvas.winfo_width()
         z_scale = (z_end - z_start) / self.canvas.winfo_width()
-
         pixels = []
         for i in range(0, self.canvas.winfo_width()):
             for j in range(0, self.canvas.winfo_height()):
@@ -277,7 +276,7 @@ class Window(tk.Tk):
     @staticmethod
     def params_to_digits(params):
         params['p'] = float(params['p']) / 1000
-        params['k'] = int(params['k'])
+        params['k'] = float(params['k'])
         params['zt'] = float(params['zt'])
 
     def start_button_pressed(self):
@@ -289,7 +288,7 @@ class Window(tk.Tk):
                 params['n'] = 1
                 self.talbot = TalbotMath(params['p'], 0, params['n'])
             else:
-                params['n'] = 400
+                params['n'] = 10000
                 params['b'] = float(params['b']) / 1000
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
@@ -314,7 +313,7 @@ class Window(tk.Tk):
                 params['n'] = 1
                 self.talbot = TalbotMath(params['p'], 0, params['n'])
             else:
-                params['n'] = 400
+                params['n'] = 10000
                 params['b'] = float(params['b']) / 1000
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
