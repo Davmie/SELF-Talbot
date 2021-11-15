@@ -285,10 +285,10 @@ class Window(tk.Tk):
             params = self.get_params_from_spinboxes()
             self.params_to_digits(params)
             if self.list_delta.get() == "Волновая":
-                params['n'] = 1
+                params['n'] = int(params['n'])
                 self.talbot = TalbotMath(params['p'], 0, params['n'])
             else:
-                params['n'] = 10000
+                params['n'] = int(params['n'])
                 params['b'] = float(params['b']) / 1000
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 
@@ -310,10 +310,10 @@ class Window(tk.Tk):
             params = self.get_params_from_spinboxes()
             self.params_to_digits(params)
             if self.list_delta.get() == "Волновая":
-                params['n'] = 1
+                params['n'] = int(params['n'])
                 self.talbot = TalbotMath(params['p'], 0, params['n'])
             else:
-                params['n'] = 10000
+                params['n'] = int(params['n'])
                 params['b'] = float(params['b']) / 1000
                 self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
 

@@ -1,5 +1,14 @@
 spinboxes_to_create_rect = [
     {
+        'name': 'n',
+        'label': 'N',
+        'type': int,
+        'min_value': 1,
+        'max_value': 11000,
+        'step': 1,
+        'default_value': 400
+    },
+    {
         'name': 'b',
         'label': 'Длина выреза',
         'type': float,
@@ -47,6 +56,15 @@ spinboxes_to_create_rect = [
 ]
 
 spinboxes_to_create_wave = [
+    {
+        'name': 'n',
+        'label': 'N',
+        'type': int,
+        'min_value': 1,
+        'max_value': 100,
+        'step': 1,
+        'default_value': 1
+    },
     {
         'name': 'p',
         'label': 'Период',
