@@ -23,7 +23,6 @@ class Window(tk.Tk):
         else:
             self.destroy()
 
-        self.talbot = TalbotMath(1, 0, 1)
         self.array_of_spinboxes = spinboxes_to_create_wave
         # basic config of app
         self.title("Эффект Талбота")
