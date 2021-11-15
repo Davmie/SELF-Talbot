@@ -1,6 +1,10 @@
-from math import cos, pi, sqrt, sin
+from math import cos
+from cmath import sqrt, pi, exp
 
 from scipy.integrate import quad
+
+# Библиотека с комплексным интегралом
+# from quadpy import quad
 
 
 class TalbotMath:
@@ -18,38 +22,33 @@ class TalbotMath:
 
         self.omega = (2 * pi) / self.p
         self.k = (2 * pi) / self.l
-        self.integrals = [(0, 0) for _ in range(-self.n, self.n + 1)]
+        self.integrals = [0] * (self.n * 2 + 1)
         self.count_integrals()
 
     def I(self, x, z):
-        sum_r = 0
-        sum_i = 0
+        return (abs(self.f(x, z))) ** 2
+
+    def f(self, x, z):
+        sum = 0
         for i in range(-self.n, self.n + 1):
             omega_n = i * self.omega
-            arg = omega_n * x + sqrt(self.k * self.k - omega_n * omega_n) * z
-            sum_r += self.fr(i, arg)
-            sum_i += self.fi(i, arg)
+            sum += self.integrals[i] * \
+                   exp(1j * (omega_n * x + sqrt(self.k ** 2 - omega_n ** 2) * z))
 
-        return sum_r * sum_r + sum_i * sum_i
+        return sum
 
-    def fr(self, i, arg):
-        return self.integrals[i][0] * cos(arg) - self.integrals[i][1] * sin(arg)
+    def fn(self, omega_n):
+        real_integral = quad(
+            lambda x: (self.f0(x) * exp(-1j * omega_n * x)).real, -self.p / 2, self.p / 2)
+        imag_integral = quad(
+            lambda x: (self.f0(x) * exp(-1j * omega_n * x)).imag, -self.p / 2, self.p / 2)
 
-    def fi(self, i, arg):
-        return self.integrals[i][1] * cos(arg) + self.integrals[i][0] * sin(arg)
-
-    def fn_r(self, omega_n):
-        return 1.0 / self.p * quad(
-            lambda x: self.f0(x) * (cos(omega_n * x)), -self.p / 2, self.p / 2)[0]
-
-    def fn_i(self, omega_n):
-        return 1.0 / self.p * quad(
-            lambda x: self.f0(x) * (-(sin(omega_n * x))), -self.p / 2, self.p / 2)[0]
+        return 1.0 / self.p * (real_integral[0] + 1j * imag_integral[0])
 
     def count_integrals(self):
         for i in range(-self.n, self.n + 1):
             omega_n = i * self.omega
-            self.integrals[i] = (self.fn_r(omega_n), self.fn_i(omega_n))
+            self.integrals[i] = self.fn(omega_n)
 
     def f0(self, x):
         coef = 2 * pi * x / self.p
