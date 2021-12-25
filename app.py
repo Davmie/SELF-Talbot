@@ -206,33 +206,30 @@ class Window(tk.Tk):
     def fill_working_area(self, x_start, x_end, z_start, z_end):
         COLOR_MAX = 255
 
-        x_scale = (x_end - x_start) / self.canvas.winfo_width()
-        z_scale = (z_end - z_start) / self.canvas.winfo_width()
-        pixels = []
-        for i in range(0, self.canvas.winfo_width()):
-            for j in range(0, self.canvas.winfo_height()):
-                pixels.append([j * x_scale + x_start, i * z_scale + z_start])
+        x_scale = (x_end - x_start) / self.system.WORKING_AREA_SIZE
+        z_scale = (z_end - z_start) / self.system.WORKING_AREA_SIZE
 
-        with Pool(cpu_count()) as p:
-            intense = array(p.starmap(self.talbot.I, pixels)).reshape(self.canvas.winfo_width(), self.canvas.winfo_height())
+        intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
 
-        i_min = i_max = intense[0][0]
+        i_max = i_min = self.talbot.I(x_start, z_start)
 
-        for i in range(self.canvas.winfo_width()):
-            for j in range(self.canvas.winfo_height()):
-                if i_max < intense[i][j]:
-                    i_max = intense[i][j]
+        for x in range(self.system.WORKING_AREA_SIZE):
+            for y in range(self.system.WORKING_AREA_SIZE):
+                intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
 
-                if i_min > intense[i][j]:
-                    i_min = intense[i][j]
+                if i_max < intense[x][y]:
+                    i_max = intense[x][y]
+
+                if i_min > intense[x][y]:
+                    i_min = intense[x][y]
 
         if not (i_max - i_min):
             color_scale = 0
         else:
             color_scale = COLOR_MAX / (i_max - i_min)
 
-        for x in range(self.canvas.winfo_width()):
-            for y in range(self.canvas.winfo_height()):
+        for x in range(self.system.WORKING_AREA_SIZE):
+            for y in range(self.system.WORKING_AREA_SIZE):
                 color = (int((intense[x][y] - i_min) * color_scale), int((intense[x][y] - i_min) * color_scale),
                          int((intense[x][y] - i_min) * color_scale))
                 x1, y1 = (x - 1), (y - 1)
