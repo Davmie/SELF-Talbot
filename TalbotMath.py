@@ -1,5 +1,6 @@
 import ctypes
 
+wave_length = 5 * 10 ** (-7)
 
 class Math(ctypes.Structure):
     _fields_ = [
@@ -17,9 +18,10 @@ class Math(ctypes.Structure):
 
 lib = ctypes.CDLL('lib/libmath.so')
 
-def create_info(p, mode, n, b=None):
+
+def create_info(p, mode, n, b=0):
     lib.create.restype = ctypes.POINTER(Math)
-    lib.create.argtypes = [ctypes.c_void_p]
+    lib.create.argtypes = (ctypes.c_double, ctypes.c_int, ctypes.c_int, ctypes.c_double)
     new_p = ctypes.c_double(p)
     new_mode = ctypes.c_int(mode)
     new_n = ctypes.c_int(n)
@@ -39,7 +41,7 @@ def Intense_wrapper(x, z, info):
 
 
 def free_info(info):
-    free = lib.free
-    free.argtypes = (ctypes.POINTER(Math))
+    free = lib.free_TalbotMath
+    free.argtypes = [ctypes.POINTER(Math)]
     free.restype = None
     free(info)

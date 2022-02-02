@@ -174,10 +174,10 @@ class Window(tk.Tk):
         try:
             params = self.get_params_from_spinboxes()
             scale = float(params['k']) * float(params['p']) / 7000
-            z0 = float(params['z0']) * 2 * float(params['p']) * float(params['p']) / (self.talbot.l * 1000000)
+            z0 = float(params['z0']) * 2 * float(params['p']) * float(params['p']) / (wave_length * 1000000)
         except KeyError:
             scale = 2 / 7000
-            z0 = 0.2 * 2 / (self.talbot.l * 1000000)
+            z0 = 0.2 * 2 / (wave_length * 1000000)
         # граф по дефолту от -7 до 7
         # если ковер от -7 до 7, то x_start надо умножить на kp/7
         points = []
@@ -291,7 +291,7 @@ class Window(tk.Tk):
                 self.talbot = create_info(params['p'], 1, params['n'], params['b'])
 
             z_start = 0
-            z_end = params['zt'] * 2 * params['p'] * params['p'] / self.talbot.l
+            z_end = params['zt'] * 2 * params['p'] * params['p'] / wave_length
             x_start = params['k'] * params['p'] * -1
             x_end = params['k'] * params['p']
 
