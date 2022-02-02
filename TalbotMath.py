@@ -17,8 +17,7 @@ class Math(ctypes.Structure):
 
 lib = ctypes.CDLL('lib/libmath.so')
 
-
-def create_info(p, mode, n, b = None):
+def create_info(p, mode, n, b=None):
     lib.create.restype = ctypes.POINTER(Math)
     lib.create.argtypes = [ctypes.c_void_p]
     new_p = ctypes.c_double(p)

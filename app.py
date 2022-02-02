@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
 from sys import platform
-from multiprocessing import Pool, cpu_count
-from numpy import reshape, array
 
 from config_spinboxes import *
 import config_gui_win as windows
