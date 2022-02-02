@@ -197,6 +197,7 @@ class Window(tk.Tk):
             points[i][1] /= y_max
             points[i][1] *= 100
         graph.create_line(points, fill='blue')
+        free_info(self.talbot)
 
     def _from_rgb(self, rgb):
         """translates an rgb tuple of int to a tkinter friendly color code
@@ -211,11 +212,11 @@ class Window(tk.Tk):
 
         intense = [[0 for _ in range(self.system.WORKING_AREA_SIZE)] for _ in range(self.system.WORKING_AREA_SIZE)]
 
-        i_max = i_min = self.talbot.I(x_start, z_start)
+        i_max = i_min = Intense_wrapper(x_start, z_start, self.talbot)
 
         for x in range(self.system.WORKING_AREA_SIZE):
             for y in range(self.system.WORKING_AREA_SIZE):
-                intense[x][y] = self.talbot.I(y * x_scale + x_start, x * z_scale + z_start)
+                intense[x][y] = Intense_wrapper(y * x_scale + x_start, x * z_scale + z_start, self.talbot)
 
                 if i_max < intense[x][y]:
                     i_max = intense[x][y]
@@ -236,6 +237,8 @@ class Window(tk.Tk):
                 x2, y2 = (x + 1), (y + 1)
                 filling = self._from_rgb(color)
                 self.canvas.create_oval(x1, y1, x2, y2, width=0, fill=filling)
+
+        free_info(self.talbot)
 
     def _check_params_in_spinboxes(self):
         params_are_correct = None
@@ -283,11 +286,11 @@ class Window(tk.Tk):
             self.params_to_digits(params)
             if self.list_delta.get() == "Волновая":
                 params['n'] = int(params['n'])
-                self.talbot = TalbotMath(params['p'], 0, params['n'])
+                self.talbot = create_info(params['p'], 0, params['n'])
             else:
                 params['n'] = int(params['n'])
                 params['b'] = float(params['b']) / 1000
-                self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
+                self.talbot = create_info(params['p'], 1, params['n'], params['b'])
 
             z_start = 0
             z_end = params['zt'] * 2 * params['p'] * params['p'] / self.talbot.l
@@ -308,11 +311,11 @@ class Window(tk.Tk):
             self.params_to_digits(params)
             if self.list_delta.get() == "Волновая":
                 params['n'] = int(params['n'])
-                self.talbot = TalbotMath(params['p'], 0, params['n'])
+                self.talbot = create_info(params['p'], 0, params['n'])
             else:
                 params['n'] = int(params['n'])
                 params['b'] = float(params['b']) / 1000
-                self.talbot = TalbotMath(params['p'], 1, params['n'], params['b'])
+                self.talbot = create_info(params['p'], 1, params['n'], params['b'])
 
         self.graph_window = tk.Toplevel()
         self.graph_window.resizable(False, False)
