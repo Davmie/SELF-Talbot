@@ -2,6 +2,7 @@ import ctypes
 
 wave_length = 5 * 10 ** (-7)
 
+
 class Math(ctypes.Structure):
     _fields_ = [
         ('p', ctypes.c_double),
